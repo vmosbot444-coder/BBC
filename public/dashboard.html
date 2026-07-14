@@ -1,0 +1,87 @@
+<!--
+  ============================================================
+   Made by Bapan | Date: 5/4/2026
+   All credits belongs to Bapan
+   For any kind of software development job, cheat, website
+   or panel development — contact Bapan:
+   Telegram: https://t.me/bapanff
+   Official Channel: https://t.me/mocosn
+  ============================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{APP_NAME}} — Panel</title>
+    <link rel="icon" type="image/png" href="/public/favicon.png">
+    <link rel="stylesheet" href="/public/css/style.css">
+</head>
+<body>
+<div class="toast-container" id="toasts"></div>
+<div class="mobile-overlay" id="mobileOverlay" onclick="toggleSidebar()"></div>
+<div class="layout">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo" id="sidebarLogo"></div>
+        <nav class="sidebar-nav">
+            <div class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')" title="Dashboard">
+                <svg><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            </div>
+            <div class="nav-item" data-page="keys" onclick="navigate('keys')" title="Keys">
+                <svg><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zM15.5 7.5l3 3L22 7l-3-3"/></svg>
+            </div>
+            <div class="nav-item" data-page="sellers" onclick="navigate('sellers')" title="Sellers" id="nav-sellers">
+                <svg><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="nav-item" data-page="files" onclick="navigate('files')" title="Files" id="nav-files">
+                <svg><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="nav-item" data-page="logs" onclick="navigate('logs')" title="Logs" id="nav-logs">
+                <svg><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div class="nav-item" data-page="telegram" onclick="navigate('telegram')" title="Telegram Bot" id="nav-telegram">
+                <svg viewBox="0 0 24 24"><path d="M21.2 4.4L2.4 11.4c-.6.2-.6.7 0 .9l4.3 1.6 1.7 5.4c.1.4.6.5.9.3l2.5-2 4.8 3.5c.4.3 1 .1 1.1-.4L22 5.3c.2-.7-.3-1.2-.8-.9zM9.6 14.4l-.4 3.2-.9-3.5 8.4-5.8-7.1 6.1z"/></svg>
+            </div>
+            <div class="nav-item" data-page="features" onclick="navigate('features')" title="Client Features" id="nav-features">
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="nav-item" data-page="settings" onclick="navigate('settings')" title="Settings" id="nav-settings">
+                <svg><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </div>
+        </nav>
+
+    </aside>
+    <main class="main">
+        <div class="topbar">
+            <div class="hamburger" onclick="toggleSidebar()">☰</div>
+            <span class="status-dot" id="statusDot" title="Online"></span>
+            <div class="topbar-title" id="topbarTitle"><span>Dashboard</span></div>
+            <div class="topbar-user">
+                <span class="role" id="userRole"></span>
+                <span id="userName"></span>
+                <button class="btn-logout" onclick="showAccountModal()">Account</button>
+            </div>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+        <div class="content" id="content"></div>
+    </main>
+</div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal" id="modalContent"></div>
+</div>
+
+<script src="/public/js/app.js"></script>
+<script src="/public/js/components/modal.js"></script>
+<script src="/public/js/components/table.js"></script>
+<script src="/public/js/pages/dashboard.js"></script>
+<script src="/public/js/pages/keys.js"></script>
+<script src="/public/js/pages/sellers.js"></script>
+<script src="/public/js/pages/files.js"></script>
+<script src="/public/js/pages/logs.js"></script>
+<script src="/public/js/pages/settings.js"></script>
+<script src="/public/js/pages/telegram.js"></script>
+<script src="/public/js/pages/features.js"></script>
+<script>init();</script>
+</body>
+</html>

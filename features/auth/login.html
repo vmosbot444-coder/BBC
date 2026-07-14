@@ -1,0 +1,77 @@
+<!--
+  ============================================================
+   Made by Bapan | Date: 5/4/2026
+   All credits belongs to Bapan
+   For any kind of software development job, cheat, website
+   or panel development — contact Bapan:
+   Telegram: https://t.me/bapanff
+   Official Channel: https://t.me/mocosn
+  ============================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{APP_NAME}} — Login</title>
+    <link rel="icon" type="image/png" href="/public/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#0A0A0B;color:#FAFAFA;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;position:relative;overflow:hidden}
+        body::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 59px,#27272A1a 59px,#27272A1a 60px),repeating-linear-gradient(90deg,transparent,transparent 59px,#27272A1a 59px,#27272A1a 60px);z-index:0}
+
+        .card{background:#141417;border:1px solid #27272A;border-radius:8px;padding:32px;width:380px;max-width:90vw;position:relative;z-index:1}
+        .logo{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:500;letter-spacing:0.2em;text-align:center;margin-bottom:8px}
+        .logo span{color:#00FF87}
+        .sub{color:#52525B;font-size:12px;text-align:center;margin-bottom:28px;font-family:'JetBrains Mono',monospace}
+        label{display:block;color:#A1A1AA;font-size:11px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px}
+        input{width:100%;background:#0A0A0B;border:1px solid #27272A;border-radius:6px;padding:10px 14px;color:#FAFAFA;font-family:'JetBrains Mono',monospace;font-size:13px;outline:none;margin-bottom:16px;transition:border-color 0.2s}
+        input:focus{border-color:#00FF87}
+        button{width:100%;background:#00FF87;color:#000;border:none;border-radius:6px;padding:12px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.05em;transition:opacity 0.2s}
+        button:hover{opacity:0.9}
+        button:active{transform:scale(0.98)}
+        .error{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#EF4444;padding:10px 14px;border-radius:6px;font-size:12px;margin-bottom:16px;display:none;font-family:'JetBrains Mono',monospace}
+        .ver{color:#52525B;font-size:11px;text-align:center;margin-top:20px;font-family:'JetBrains Mono',monospace}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="logo" id="brandLogo"></div>
+        <div class="sub">admin panel</div>
+        <div class="error" id="error"></div>
+        <label>Username</label>
+        <input type="text" id="username" placeholder="enter username" autocomplete="off">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()">
+        <button onclick="login()">SIGN IN</button>
+
+    </div>
+    <script>
+    async function login() {
+        const u = document.getElementById('username').value.trim();
+        const p = document.getElementById('password').value;
+        const err = document.getElementById('error');
+        err.style.display = 'none';
+        if (!u || !p) { err.textContent = 'fill in both fields'; err.style.display = 'block'; return; }
+        try {
+            const fd = new FormData();
+            fd.append('username', u);
+            fd.append('password', p);
+            const res = await fetch('/api/login', { method: 'POST', body: fd });
+            const data = await res.json();
+            if (data.success) {
+                window.location.replace('/panel');
+            } else {
+                err.textContent = data.error.replace(/_/g, ' ');
+                err.style.display = 'block';
+            }
+        } catch(e) {
+            err.textContent = 'connection failed';
+            err.style.display = 'block';
+        }
+    }
+    (function(){var n='{{APP_NAME}}';var el=document.getElementById('brandLogo');el.innerHTML=n.substring(0,2)+'<span>'+n[2]+'</span>'+n.substring(3);})();
+    </script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!--
+  ============================================================
+   Made by Bapan | Date: 5/4/2026
+   All credits belongs to Bapan
+   For any kind of software development job, cheat, website
+   or panel development — contact Bapan:
+   Telegram: https://t.me/bapanff
+   Official Channel: https://t.me/mocosn
+  ============================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{APP_NAME}} — Setup</title>
+    <link rel="icon" type="image/png" href="/public/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#0A0A0B;color:#FAFAFA;font-family:'Inter',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center}
+        .wizard{width:460px;max-width:92vw}
+        .logo{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:500;letter-spacing:0.2em;text-align:center;margin-bottom:4px}
+        .logo span{color:#00FF87}
+        .tagline{color:#52525B;font-size:11px;text-align:center;font-family:'JetBrains Mono',monospace;margin-bottom:24px}
+        .steps{display:flex;gap:4px;margin-bottom:24px}
+        .step-dot{flex:1;height:3px;border-radius:2px;background:#27272A;transition:background 0.3s}
+        .step-dot.active{background:#00FF87}
+        .step-dot.done{background:#00FF87;opacity:0.5}
+        .card{background:#141417;border:1px solid #27272A;border-radius:8px;padding:28px}
+        .step-title{font-size:15px;font-weight:600;margin-bottom:4px}
+        .step-desc{font-size:12px;color:#52525B;margin-bottom:20px}
+        label{display:block;color:#A1A1AA;font-size:11px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px}
+        input{width:100%;background:#0A0A0B;border:1px solid #27272A;border-radius:6px;padding:10px 14px;color:#FAFAFA;font-family:'JetBrains Mono',monospace;font-size:13px;outline:none;margin-bottom:14px;transition:border-color 0.2s}
+        input:focus{border-color:#00FF87}
+        .btn{width:100%;padding:12px;border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.04em;transition:opacity 0.2s}
+        .btn:hover{opacity:0.9}
+        .btn:active{transform:scale(0.98)}
+        .btn-primary{background:#00FF87;color:#000}
+        .btn-secondary{background:transparent;border:1px solid #27272A;color:#A1A1AA}
+        .btn-row{display:flex;gap:8px;margin-top:6px}
+        .btn-row .btn{flex:1}
+        .status{padding:10px 14px;border-radius:6px;font-size:12px;font-family:'JetBrains Mono',monospace;margin-bottom:14px;display:none}
+        .status-ok{display:block;background:rgba(0,255,135,0.08);border:1px solid rgba(0,255,135,0.2);color:#00FF87}
+        .status-err{display:block;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:#EF4444}
+        .check{color:#00FF87;font-size:18px;margin-right:8px}
+        .cross{color:#EF4444;font-size:18px;margin-right:8px}
+        .done-screen{text-align:center;padding:32px 0}
+        .done-icon{font-size:48px;margin-bottom:16px}
+        .done-title{font-size:18px;font-weight:600;margin-bottom:8px}
+        .done-sub{color:#52525B;font-size:13px;margin-bottom:24px}
+    </style>
+</head>
+<body>
+<div class="wizard">
+    <div class="logo" id="brandLogo"></div>
+    <div class="tagline">panel setup</div>
+    <div class="steps">
+        <div class="step-dot active" id="dot-1"></div>
+        <div class="step-dot" id="dot-2"></div>
+    </div>
+
+    <div class="card">
+        <div id="step-1">
+            <div class="step-title">Database Connection</div>
+            <div class="step-desc">Verify your MySQL connection before proceeding</div>
+            <div class="status" id="dbStatus"></div>
+            <label>Host</label>
+            <input id="dbHost" value="localhost" disabled>
+            <label>Database</label>
+            <input id="dbName" value="" disabled>
+            <div class="btn-row">
+                <button class="btn btn-secondary" onclick="testDb()">Test Connection</button>
+                <button class="btn btn-primary" id="step1Next" onclick="goStep(2)" style="display:none">Next</button>
+            </div>
+        </div>
+
+        <div id="step-2" hidden>
+            <div class="step-title">Admin Account</div>
+            <div class="step-desc">Create the primary admin account</div>
+            <div class="status" id="adminStatus"></div>
+            <label>Username</label>
+            <input id="adminUser" placeholder="admin">
+            <label>Password</label>
+            <input id="adminPass" type="password" placeholder="••••••••">
+            <label>Confirm Password</label>
+            <input id="adminConfirm" type="password" placeholder="••••••••">
+            <div class="btn-row">
+                <button class="btn btn-secondary" onclick="goStep(1)">Back</button>
+                <button class="btn btn-primary" onclick="doInstall()">Initialize</button>
+            </div>
+        </div>
+
+        <div id="step-done" hidden>
+            <div class="done-screen">
+                <div class="done-icon">✓</div>
+                <div class="done-title">Setup Complete</div>
+                <div class="done-sub">Your panel is ready. Login with your admin credentials.</div>
+                <button class="btn btn-primary" onclick="window.location.href='/login'" style="max-width:200px;margin:0 auto">Go to Login</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentStep = 1;
+let dbOk = false;
+
+async function api(url, data) {
+    const opts = {method:'POST'};
+    if (data) { opts.body = new FormData(); Object.entries(data).forEach(([k,v]) => opts.body.append(k,v)); }
+    const res = await fetch(url, opts);
+    return res.json();
+}
+
+async function init() {
+    const res = await fetch('/api/setup/status');
+    const data = await res.json();
+    if (data.installed) { window.location.href = '/login'; return; }
+    document.getElementById('dbName').value = data.db_connected ? '(configured)' : '(check config/database.php)';
+    if (data.db_connected) {
+        dbOk = true;
+        showStatus('dbStatus', true, 'Connection ready');
+        document.getElementById('step1Next').style.display = '';
+    }
+}
+
+function showStatus(id, ok, msg) {
+    const el = document.getElementById(id);
+    el.className = 'status ' + (ok ? 'status-ok' : 'status-err');
+    el.innerHTML = (ok ? '<span class="check">✓</span>' : '<span class="cross">✕</span>') + msg;
+}
+
+async function testDb() {
+    const res = await api('/api/setup/test-db');
+    if (res.success) { dbOk = true; showStatus('dbStatus', true, 'Connected successfully'); document.getElementById('step1Next').style.display = ''; }
+    else showStatus('dbStatus', false, res.error);
+}
+
+function goStep(n) {
+    if (n === 2 && !dbOk) { showStatus('dbStatus', false, 'Test connection first'); return; }
+    document.getElementById('step-' + currentStep).hidden = true;
+    document.getElementById('step-' + n).hidden = false;
+    currentStep = n;
+    for (let i = 1; i <= 2; i++) {
+        const dot = document.getElementById('dot-' + i);
+        dot.className = 'step-dot' + (i === n ? ' active' : i < n ? ' done' : '');
+    }
+}
+
+async function doInstall() {
+    if (!document.getElementById('adminUser').value) { showStatus('adminStatus', false, 'Enter username'); return; }
+    if (document.getElementById('adminPass').value.length < 6) { showStatus('adminStatus', false, 'Password min 6 chars'); return; }
+    if (document.getElementById('adminPass').value !== document.getElementById('adminConfirm').value) { showStatus('adminStatus', false, 'Passwords do not match'); return; }
+
+    const res = await api('/api/setup/install', {
+        username: document.getElementById('adminUser').value,
+        password: document.getElementById('adminPass').value,
+        confirm_password: document.getElementById('adminConfirm').value
+    });
+    if (res.success) {
+        document.getElementById('step-2').hidden = true;
+        document.getElementById('step-done').hidden = false;
+        document.querySelectorAll('.step-dot').forEach(d => d.className = 'step-dot done');
+    } else {
+        showStatus('adminStatus', false, res.error.replace(/_/g, ' '));
+    }
+}
+
+init();
+(function(){var n='{{APP_NAME}}';var el=document.getElementById('brandLogo');el.innerHTML=n.substring(0,2)+'<span>'+n[2]+'</span>'+n.substring(3);})();
+</script>
+</body>
+</html>
